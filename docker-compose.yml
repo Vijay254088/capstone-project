@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  web:
+    image: capstoneimage
+    container_name: capstone_nginx
+    ports:
+      - "8081:80"
+    restart: always
