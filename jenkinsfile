@@ -1,41 +1,25 @@
+
 pipeline {
     agent any
-    environment {
-        DOCKER_DEV_REPO = "vijay192001/dev-repo"
-        DOCKER_PROD_REPO = "vijay192001/prod-repo"
-    }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Build Docker Image') {
+         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_DEV_REPO}:${env.BUILD_NUMBER}")
+                    // Build Docker image
+                    sh 'docker build -t vijay192001/prod:latest .'
                 }
             }
         }
-        stage('Push to DockerHub Dev') {
-            when {
-                branch 'dev'
-            }
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    dockerImage.push()
-                }
-            }
-        }
-        stage('Push to DockerHub Prod') {
-            when {
-                branch 'master'
-            }
-            steps {
-                script {
-                    dockerImage = docker.build("${DOCKER_PROD_REPO}:${env.BUILD_NUMBER}")
-                    dockerImage.push()
+                    // Login to DockerHub using the Personal Access Token
+                    sh "echo $DOCKER_CREDENTIALS_PSWD | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin"
+                    
+                    // Push images to DockerHub
+                    sh 'docker push vijay192001/prod:latest’
                 }
             }
         }
     }
+}
