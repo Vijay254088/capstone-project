@@ -1,7 +1,11 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_CREDENTIALS_USR = 'vijay192001'
+        DOCKER_CREDENTIALS_PSWD = 'Raghava@2024'
+    }
     stages {
-         stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     // Build Docker image
@@ -13,12 +17,13 @@ pipeline {
             steps {
                 script {
                     // Login to DockerHub using the Personal Access Token
-                    sh "echo $DOCKER_CREDENTIALS_PSWD | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin"
-                    
-                    // Push images to DockerHub
-                    sh 'docker push vijay192001/prod:latest’
+                    sh 'echo $DOCKER_CREDENTIALS_PSWD | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
+
+                    // Push image to DockerHub
+                    sh 'docker push vijay192001/prod:latest'
                 }
             }
         }
     }
 }
+
